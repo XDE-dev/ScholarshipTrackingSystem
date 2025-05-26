@@ -1,11 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Scholarship Tracking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Scholarship Tracking System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Welcome to the Scholarship Tracking System</h1>
-    <p>This is your homepage.</p>
+<body class="dashboard-page">
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Scholarship Tracker</span>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="nav-menu">
+                <a href="/" class="nav-link active">Dashboard</a>
+                <a href="#" class="nav-link">Applications</a>
+                <a href="#" class="nav-link">Profile</a>
+                <div class="nav-notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" th:text="${#lists.size(notifications)}"></span>
+                </div>
+                <a href="/logout" class="btn btn-outline btn-sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="/" class="mobile-nav-link">Dashboard</a>
+            <a href="#" class="mobile-nav-link">Applications</a>
+            <a href="#" class="mobile-nav-link">Profile</a>
+            <a href="/logout" class="mobile-nav-link">Logout</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Welcome back, <span th:text="${username}">Student</span>!</h1>
+                <p>Manage your scholarships and track your applications</p>
+            </div>
+
+            <!-- Quick Actions Grid -->
+            <div class="actions-grid">
+                <div class="action-card" onclick="showComingSoon('Apply for Scholarship')">
+                    <div class="action-icon blue">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Apply for Scholarship</h3>
+                    <p>Submit new scholarship applications</p>
+                </div>
+
+                <div class="action-card" onclick="showComingSoon('Track Status')">
+                    <div class="action-icon green">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Track Status</h3>
+                    <p>Monitor your application progress</p>
+                </div>
+
+                <div class="action-card" onclick="showComingSoon('Renewal')">
+                    <div class="action-icon purple">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Renewal</h3>
+                    <p>Renew existing scholarships</p>
+                </div>
+
+                <div class="action-card" onclick="showComingSoon('Profile')">
+                    <div class="action-icon orange">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Profile</h3>
+                    <p>Update your personal information</p>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Notifications Section -->
+                <div class="content-card notifications-card">
+                    <div class="card-header">
+                        <h2>
+                            <i class="fas fa-bell"></i>
+                            Recent Notifications
+                            <span class="badge" th:text="${#lists.size(notifications)}"></span>
+                        </h2>
+                        <p>Stay updated with your scholarship activities</p>
+                    </div>
+                    <div class="card-content">
+                        <!-- Demo notifications - hardcoded for presentation -->
+                        <div th:each="notification : ${notifications}" 
+                             class="notification-item" 
+                             th:classappend="${notification.type}">
+                            <div class="notification-header">
+                                <h4 th:text="${notification.title}"></h4>
+                                <span class="notification-date" th:text="${notification.date}"></span>
+                            </div>
+                            <p th:text="${notification.message}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="sidebar">
+                    <div class="content-card stats-card">
+                        <div class="card-header">
+                            <h2>Quick Stats</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="stat-item">
+                                <span>Active Applications</span>
+                                <span class="stat-value" th:text="${stats.activeApplications}"></span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Approved Scholarships</span>
+                                <span class="stat-value success" th:text="${stats.approvedScholarships}"></span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Pending Reviews</span>
+                                <span class="stat-value warning" th:text="${stats.pendingReviews}"></span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Total Amount</span>
+                                <span class="stat-value primary" th:text="${stats.totalAmount}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card deadlines-card">
+                        <div class="card-header">
+                            <h2>Upcoming Deadlines</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="deadline-item">
+                                <span>Merit Scholarship</span>
+                                <span class="deadline-date urgent">May 30</span>
+                            </div>
+                            <div class="deadline-item">
+                                <span>STEM Excellence</span>
+                                <span class="deadline-date warning">Jun 15</span>
+                            </div>
+                            <div class="deadline-item">
+                                <span>Community Service</span>
+                                <span class="deadline-date normal">Jul 01</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/app.js}"></script>
 </body>
 </html>
